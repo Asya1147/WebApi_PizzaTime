@@ -4,7 +4,7 @@ using WebApi_PizzaTime.Data;
 using WebApi_PizzaTime.Controllers;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<WebApi_PizzaTimeContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("WebApi_PizzaTimeContext") ?? throw new InvalidOperationException("Connection string 'WebApi_PizzaTimeContext' not found.")));
+options.UseSqlServer(builder.Configuration.GetConnectionString("WebApi_PizzaTimeContext") ?? throw new InvalidOperationException("Connection string 'WebApi_PizzaTimeContext' not found.")));
 
 // Add services to the container.
 

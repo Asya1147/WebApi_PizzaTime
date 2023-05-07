@@ -6,6 +6,7 @@ using System.Collections;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
+using System.Xml.Linq;
 using WebApi_PizzaTime;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -19,7 +20,9 @@ namespace WebApi_PizzaTime.Controllers
     {
         public List<Pizza> list_pizza = new List<Pizza>();
         public string connectionString = "Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = C:\\Users\\ASYA\\Desktop\\WebApi_PizzaTime\\DataBase\\MyDataBase.mdf; Integrated Security = True; Connect Timeout = 30";
-
+        public string text; 
+        public SqlConnection connection; 
+        public SqlCommand command;
 
         // GET: <GetPizza>/all
         [HttpGet]
@@ -70,11 +73,11 @@ namespace WebApi_PizzaTime.Controllers
             
             list_pizza.Clear();
             
-            string sqlExpression = "SELECT * FROM Pizza";
+            text = "SELECT * FROM Pizza";
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                SqlCommand command = new SqlCommand(sqlExpression, connection);
+                SqlCommand command = new SqlCommand(text, connection);
                 SqlDataReader reader = command.ExecuteReader();
 
                 if (reader.HasRows) // если есть данные
@@ -92,8 +95,19 @@ namespace WebApi_PizzaTime.Controllers
 
         // POST <GetPizza>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post(string name, double price)
         {
+
+            connection = new SqlConnection(connectionString);
+
+            text = $"Insert Into Pizza VALUES ('{name}',{price})";
+
+            command = new SqlCommand(text, connection);
+
+            connection.Open(); 
+            command.ExecuteNonQuery(); 
+            connection.Close(); 
+
         }
 
         //// PUT <GetPizza>/5
@@ -102,10 +116,22 @@ namespace WebApi_PizzaTime.Controllers
         //{
         //}
 
-        //// DELETE <GetPizza>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+
+        // DELETE <GetPizza>/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+            
+            connection = new SqlConnection(connectionString);
+
+            text = $"DELETE FROM Pizza WHERE id={id}";
+
+            command = new SqlCommand(text, connection);
+
+            connection.Open(); 
+            command.ExecuteNonQuery(); 
+            connection.Close(); 
+            
+        }
     }
 }
